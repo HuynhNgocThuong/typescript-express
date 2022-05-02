@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
 import Controller from './interfaces/controller.interface';
-import 'dotenv';
+import errorMiddleware from './middleware/error.middleware';
 class App {
   public app: express.Application;
 
@@ -11,6 +11,7 @@ class App {
     this.connectToTheDatabase();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
+    this.initializeErrorHandling();
   }
 
   public listen() {
@@ -18,7 +19,9 @@ class App {
       console.log(`App listening on the port ${process.env.PORT}`);
     });
   }
-
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
+  }
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
   }
@@ -29,9 +32,12 @@ class App {
     });
   }
 
-  private connectToTheDatabase() {
+  private async connectToTheDatabase() {
     const {MONGO_USER, MONGO_PASSWORD, MONGO_PATH} = process.env;
-    mongoose.connect(`${MONGO_PATH}`);
+    await mongoose
+      .connect(`${MONGO_PATH}`)
+      .then(() => console.log('Database connected.'))
+      .catch((err) => console.log(err));
   }
 }
 export default App;
