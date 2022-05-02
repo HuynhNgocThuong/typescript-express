@@ -1,1 +1,1 @@
-> Learn about middleware, routing and controlle
+> Learn error handling and validating incoming data
