@@ -1,1 +1,1 @@
-> Learn about middleware, routing and controlle
+> Learn about middleware, routing and controllers
